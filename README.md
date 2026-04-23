@@ -2,8 +2,6 @@
 
 A zero-config [Dev Container](https://containers.dev/) for Flutter & Dart development. Open any project with this `.devcontainer/` and get a fully working environment — `flutter doctor -v` passes with **zero errors, zero warnings**.
 
-Built for the AI-assisted development era: works out of the box with [GitHub Copilot](https://github.com/features/copilot), [Kiro CLI](https://kiro.dev), [Gemini in Android Studio](https://developer.android.com/studio/preview/gemini), or any AI coding agent that supports devcontainers.
-
 ## Variants
 
 Pick the configuration that matches your stack. All variants share a single Dockerfile — features are toggled via build args.
