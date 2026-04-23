@@ -4,6 +4,19 @@ A zero-config [Dev Container](https://containers.dev/) for Flutter & Dart develo
 
 Built for the AI-assisted development era: works out of the box with [GitHub Copilot](https://github.com/features/copilot), [Kiro CLI](https://kiro.dev), [Gemini in Android Studio](https://developer.android.com/studio/preview/gemini), or any AI coding agent that supports devcontainers.
 
+## Variants
+
+Pick the configuration that matches your stack. All variants share a single Dockerfile — features are toggled via build args.
+
+| Variant | What's included | Use case |
+|---|---|---|
+| **`flutter/`** | Flutter, Dart, Android SDK, Chrome, Linux toolchain | Pure Flutter development |
+| **`flutter-kiro/`** | Above + [Kiro CLI](https://kiro.dev) | AI-assisted Flutter development |
+| **`flutter-kiro-serverpod/`** | Above + [Serverpod CLI](https://serverpod.dev) + Docker-in-Docker | Full-stack Flutter + Serverpod |
+| **`flutter-kiro-serverpod-bmad/`** | Above + [Node.js 22 LTS](https://nodejs.org) | Full-stack + [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) ready |
+
+When you open this repo in VS Code or GitHub Codespaces, you'll be prompted to choose which variant to use.
+
 ## Why use a Dev Container?
 
 If you're new to coding — or you're a vibecoder building apps with AI — this section is for you.
@@ -27,7 +40,7 @@ When you give an AI agent a devcontainer, you're giving it a **predictable, repr
 ### How it works (the simple version)
 
 1. You have a project folder with a `.devcontainer/` directory inside it
-2. You open it in VS Code → it asks "Reopen in Container?" → you click yes
+2. You open it in VS Code → it asks which configuration to use → you pick one
 3. VS Code builds a container with Flutter, Dart, Android SDK, Chrome — everything
 4. You (and your AI agent) code inside this container
 5. Your files are still on your machine — the container just provides the tools
@@ -44,6 +57,9 @@ When you give an AI agent a devcontainer, you're giving it a **predictable, repr
 | OpenJDK | 17 | Android toolchain |
 | Google Chrome | latest | Web development & testing |
 | Linux toolchain | clang 18, cmake, ninja, pkg-config, GTK3 | Desktop development |
+| Kiro CLI | latest | AI-assisted development *(optional)* |
+| Serverpod CLI | latest | Dart backend framework *(optional)* |
+| Node.js | 22 LTS | Required by BMAD Method *(optional)* |
 
 ## Quick start
 
@@ -55,7 +71,7 @@ cp -r .devcontainer/ /path/to/your/flutter/project/
 cd /path/to/your/flutter/project
 code .
 
-# 3. VS Code will prompt: "Reopen in Container" → click it
+# 3. VS Code will prompt you to pick a variant, then "Reopen in Container"
 #    Or: Ctrl+Shift+P → "Dev Containers: Reopen in Container"
 ```
 
@@ -98,6 +114,17 @@ Check for updates at (official sources only):
 - **Platforms** — https://developer.android.com/tools/releases/platforms
 
 Then rebuild: `Dev Containers: Rebuild Container` in VS Code.
+
+## Project structure
+
+```
+.devcontainer/
+├── Dockerfile                                # Shared, parameterized
+├── flutter/devcontainer.json                 # Flutter only
+├── flutter-kiro/devcontainer.json            # + Kiro CLI
+├── flutter-kiro-serverpod/devcontainer.json  # + Kiro + Serverpod
+└── flutter-kiro-serverpod-bmad/devcontainer.json  # + all + Node.js (BMAD)
+```
 
 ## License
 
