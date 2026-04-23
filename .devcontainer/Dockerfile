@@ -1,6 +1,9 @@
 # ==============================================================================
 # Flutter & Dart SaaS Development Container
 # Goal: flutter doctor -v with ZERO errors and ZERO warnings
+#
+# This Dockerfile is shared by all devcontainer variants.
+# Features are toggled via build args from each variant's devcontainer.json.
 # ==============================================================================
 FROM ubuntu:24.04
 
@@ -13,6 +16,11 @@ ARG FLUTTER_VERSION=3.41.7
 ARG ANDROID_SDK_CMDLINE_TOOLS_VERSION=14742923
 ARG ANDROID_BUILD_TOOLS_VERSION=36.0.0
 ARG ANDROID_PLATFORM_VERSION=36
+
+# Feature toggles (set from devcontainer.json build args)
+ARG INSTALL_KIRO=false
+ARG INSTALL_SERVERPOD=false
+ARG INSTALL_NODEJS=false
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
@@ -79,7 +87,8 @@ RUN yes | sdkmanager --licenses > /dev/null 2>&1 \
 # 5. Flutter SDK
 # ---------------------------------------------------------------------------
 ENV FLUTTER_HOME=/home/vscode/flutter
-ENV PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PATH}"
+ENV PUB_CACHE=/home/vscode/.pub-cache
+ENV PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PUB_CACHE}/bin:${PATH}"
 ENV CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 
 RUN curl -fsSL "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" \
@@ -89,7 +98,32 @@ RUN curl -fsSL "https://storage.googleapis.com/flutter_infra_release/releases/st
     && flutter precache --linux --web --android
 
 # ---------------------------------------------------------------------------
-# 6. Android Studio stub (satisfies flutter doctor check without full install)
+# 6. (Optional) Node.js 22 LTS — required by BMAD Method
+#    https://github.com/bmad-code-org/BMAD-METHOD
+# ---------------------------------------------------------------------------
+RUN if [ "$INSTALL_NODEJS" = "true" ]; then \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - \
+    && sudo apt-get install -y --no-install-recommends nodejs \
+    && sudo rm -rf /var/lib/apt/lists/*; \
+    fi
+
+# ---------------------------------------------------------------------------
+# 7. (Optional) Kiro CLI — AI-assisted development
+#    https://kiro.dev/docs/cli/installation/
+# ---------------------------------------------------------------------------
+RUN if [ "$INSTALL_KIRO" = "true" ]; then \
+    curl -fsSL https://cli.kiro.dev/install | bash; \
+    fi
+
+# ---------------------------------------------------------------------------
+# 8. (Optional) Serverpod CLI
+# ---------------------------------------------------------------------------
+RUN if [ "$INSTALL_SERVERPOD" = "true" ]; then \
+    dart pub global activate serverpod_cli; \
+    fi
+
+# ---------------------------------------------------------------------------
+# 9. Android Studio stub (satisfies flutter doctor check without full install)
 #    Flutter checks /opt/android-studio/jbr/bin/java and version from ~/.cache
 # ---------------------------------------------------------------------------
 USER root
@@ -101,7 +135,7 @@ RUN mkdir -p /home/vscode/.cache/Google/AndroidStudio2024.3 \
     && printf '/opt/android-studio' > /home/vscode/.cache/Google/AndroidStudio2024.3/.home
 
 # ---------------------------------------------------------------------------
-# 7. Pre-run flutter doctor to cache artifacts
+# 10. Pre-run flutter doctor to cache artifacts
 # ---------------------------------------------------------------------------
 RUN flutter doctor -v
 

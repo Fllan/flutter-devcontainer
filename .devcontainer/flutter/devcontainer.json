@@ -1,6 +1,13 @@
 {
   "name": "Flutter & Dart",
-  "build": { "dockerfile": "Dockerfile" },
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "args": {
+      "INSTALL_KIRO": "false",
+      "INSTALL_SERVERPOD": "false",
+      "INSTALL_NODEJS": "false"
+    }
+  },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteUser": "vscode",
   "postCreateCommand": "mkdir -p /home/vscode/.cache/Google/AndroidStudio2024.3 && printf '/opt/android-studio' > /home/vscode/.cache/Google/AndroidStudio2024.3/.home && flutter doctor -v",
