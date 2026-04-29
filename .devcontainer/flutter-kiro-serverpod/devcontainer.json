@@ -11,7 +11,8 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteUser": "vscode",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "postCreateCommand": "mkdir -p /home/vscode/.cache/Google/AndroidStudio2024.3 && printf '/opt/android-studio' > /home/vscode/.cache/Google/AndroidStudio2024.3/.home && flutter doctor -v",
   "customizations": {
